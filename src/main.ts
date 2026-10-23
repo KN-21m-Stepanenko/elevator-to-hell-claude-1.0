@@ -249,7 +249,7 @@ secrets.onActivated = (info) => {
   }
 
   hud.toast(
-    `СЕКРЕТ АКТИВОВАНО! Залишилось секретів: ${info.remaining}`,
+    `СЕКРЕТ АКТИВОВАНО!`,
     4500,
   );
 };
@@ -429,4 +429,4 @@ engine.runRenderLoop(() =>
 window.addEventListener(
   "resize",
   () => engine.resize(),
-);
+);

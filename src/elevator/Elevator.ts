@@ -109,6 +109,14 @@ export class Elevator {
     this.landing.get(this.floor)?.setOpen(true);
   }
 
+  /** Закрыть двери запечатанного лифта после выхода босса. */
+  closeSealed() {
+    if (this.state !== "SEALED") return;
+    this.sealedOpen = false;
+    this.door.setOpen(false);
+    this.landing.get(this.floor)?.setOpen(false);
+  }
+
   /** Гасит свет в кабине и не включает его больше. Вызывать в начале сцены босса. */
   killCabinLight() {
     this.lightsOut = true;

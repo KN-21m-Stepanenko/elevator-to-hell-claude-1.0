@@ -71,7 +71,7 @@ export class BossEncounter {
       style: "lava",
       splashDamage: B.lava.splashDamage,
       explosionRadius: B.lava.explosionRadius,
-      deathReason: "ВАС СПАЛИЛА ЛАВА ФІНАЛЬНОГО БОСА",
+      deathReason: "МАЙЖЕ ВИШЛО...",
     });
     this.lava.onLaunch = (origin) => d.onLavaThrown(origin);
 
@@ -212,7 +212,7 @@ export class BossEncounter {
     if (t >= I.doorsOpenAt && !this.doorsOpened) {
       this.doorsOpened = true;
       this.d.elevator.openSealed();
-      this.d.say("ВСІ СЕКРЕТИ АКТИВОВАНО! ДВЕРІ ЛІФТА ГОРЯТЬ...", 3500);
+      this.d.say("ВІДБУВАЄТЬСЯ ЩОСЬ ДЕМОНІЧНЕ...", 3500);
     }
     // 5. Из лифта выходит босс.
     if (t >= I.bossEmergeAt && !this.bossReleased) {
@@ -225,6 +225,7 @@ export class BossEncounter {
   }
 
   private beginFight() {
+    this.d.elevator.closeSealed();
     this.phase = "FIGHT";
     this.d.lighting.set(HELL, 0.9, 0.3);
     // NPC звереют; очередь — от ближних к боссу к дальним.
