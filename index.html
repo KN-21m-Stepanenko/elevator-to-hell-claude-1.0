@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Elevator to Hell</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="crosshair" class="hidden">+</div>
+  <div id="hint" class="hidden"></div>
+  <div id="toast" class="hidden"></div>
+  <div id="secrets" class="hidden"></div>
+  <div id="monsters" class="hidden"></div>
+  <div id="health" class="hidden"></div>
+  <div id="bossbar" class="hidden"><div class="bossbar-label">ФІНАЛЬНИЙ БОС</div><div class="bossbar-track"><div id="bossbarFill" class="bossbar-fill"></div></div></div>
+  <div id="overlay">
+    <p class="tag">Візуалізація системи керування ліфтом</p>
+    <h1>>> ELEVATOR TO HELL >> </h1>
+    <p class="sub">Натисніть для початку</p>
+    <p class="keys">WASD — рух · миша — камера · E — взаємодія · Q — зброя · ЛКМ — постріл · Esc — пауза</p>
+    <button id="restartKey" type="button">R — Перезапустити гру</button>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

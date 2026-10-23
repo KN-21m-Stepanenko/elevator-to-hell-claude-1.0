@@ -1,0 +1,326 @@
+import { Vector3 } from "@babylonjs/core";
+
+/** Единый конфиг игры: все числа и тайминги настраиваются здесь. */
+export const CONFIG = {
+  render: { pixelScale: 3, fov: 1.2, fogDensity: 0.015 },
+
+  player: {
+    moveSpeed: 6,
+    mouseSensitivity: 0.0022,
+    maxPitch: 1.5,
+    eyeHeight: 1.6,
+    ellipsoid: new Vector3(0.4, 0.9, 0.4),
+    gravity: 9.8,
+    health: 100,
+    deathCameraRise: 1.2,
+    deathCameraForward: -0.45,
+    deathCameraPitch: 0.95,
+    deathCameraTime: 0.55,
+  },
+
+  level: {
+    tile: 2,
+    roofHeight: 4,
+    wallThickness: 0.4,
+    halfX: 10,
+    halfZ: 8,
+  },
+
+  elevator: {
+    cabinSize: 5,
+    cabinHeight: 3,
+    doorWidth: 2.4,
+    floorHeight: 5,
+    floors: [-1, 0, 1, 2, 3, 4],
+    startFloor: 0,
+    speed: 3,
+    doorTime: 1.2,
+    reach: 3.5,
+    weightLimit: 300,
+    playerWeight: 80,
+    npcWeight: [60, 100],
+    npcCount: [3, 5],
+  },
+
+  weapon: {
+    // Радиус поиска оружия стал меньше.
+    pickupRange: 2.5,
+
+    shotgun: {
+      pellets: 8,
+      damage: 10,
+      spread: 0.045,
+      cooldown: 0.85,
+      range: 40,
+      recoil: 0.03,
+    },
+
+    machineGun: {
+      damage: 16,
+      spread: 0.014,
+      cooldown: 0.085,
+      range: 55,
+      recoil: 0.008,
+    },
+
+    quadShotgun: {
+      pellets: 8,
+      damage: 25,
+      spread: 0.085,
+      cooldown: 0.75,
+      range: 42,
+      recoil: 0.038,
+    },
+
+    rocketLauncher: {
+      directDamage: 300,
+
+      // Увеличил урон по площади.
+      splashDamage: 220,
+
+      // Большой радиус взрыва.
+      explosionRadius: 3.0,
+
+      // Радиус proximity fuse.
+      // Ракета взорвётся ещё до прямого контакта
+      // с монстром, если пройдёт достаточно близко.
+      proximityFuseRadius: 1.5,
+
+      cooldown: 1.25,
+      projectileSpeed: 18,
+      projectileGravity: -1.8,
+      maxFlightTime: 5,
+
+      // Размер видимого следа ракеты.
+      trailLength: 1.0,
+
+      recoil: 0.045,
+    },
+
+    railgun: {
+      damage: 200,
+      range: 80,
+      cooldown: 1.5,
+      recoil: 0.055,
+      maxTargets: 6,
+
+      // Q2-подобный спиральный след.
+      trailDuration: 0.24,
+      trailRadius: 0.12,
+      trailPitch: 0.45,
+      trailSegmentsPerTurn: 8,
+    },
+
+    pickups: {
+      1: {
+        type: "MACHINE_GUN",
+        position: [4, -6],
+        height: 0.7, // на паллете
+      },
+
+      2: {
+        type: "QUAD_SHOTGUN",
+        position: [-7.0, 5.2],
+        height: 0.45, // обычный пол
+      },
+
+      3: {
+        type: "ROCKET_LAUNCHER",
+        position: [4.8, 5.7],
+        height: 0.45, // обычный пол
+      },
+
+      4: {
+        type: "RAILGUN",
+        position: [-5.5, -5.3],
+        height: 0.45, // обычный пол
+      },
+    },
+  },
+
+  npc: {
+    hp: 40,
+    runSpeed: 3.2,
+    sightRange: 18,
+
+    /** Поведение в панике снаружи кабины. */
+    panic: {
+      goalSpacing: 2.0,      // минимальное расстояние между «местами» разных NPC (и до стоящих NPC), м
+      avoidRadius: 2.5,      // при смене места новая точка не ближе этого радиуса к прежней, м
+      arriveRadius: 0.6,     // «дошёл до места»
+      minProgress: 0.5,      // меньше этого сокращения пути за 1 с — топчется или кружит, м
+      settleNear: 2.5,       // если застрял ближе этого расстояния до цели — остаётся на месте, м
+      actInterval: [2.2, 5], // как часто стоящий NPC меняет позу / переступает / оглядывается, с
+      nudgeRange: [0.8, 1.6],// длина короткого шага на месте, м
+      relocateChance: 0.12,  // шанс перебежать на другое место при смене позы
+      relocateAfter: 6,      // но не раньше, чем простоял столько, с
+      cabinSpeed: 0.7,       // доля runSpeed при перемещении внутри кабины
+      cabinOffset: 0.35,     // насколько NPC в кабине «переминается» вокруг своего места, м
+    },
+  },
+
+  monsters: {
+    walker: {
+      count: [3, 5],
+      hp: 240,
+      speed: 1.9,
+      damage: 12,
+      attackRange: 1.5,
+      attackCooldown: 0.9,
+      attackDuration: 0.55,
+      attackHitTime: 0.26,
+      sightRange: 30,
+      radius: 0.55,
+      bodyHeight: 2.15,
+      lingerRadius: 10, // если цель в лифте, монстры бродят не дальше 10 м от двери
+      deathTime: 1.0,
+      walkAnimRate: 3.4,
+    },
+
+    flying: {
+      count: [3, 6],
+      hp: 175,
+      damage: 18,
+      attackRange: 1.4,
+      hitRadius: 2.1,
+      attackCooldown: 1.2,
+      orbitRadiusMin: 6,
+      orbitRadiusMax: 9,
+      orbitHeight: 5.5,
+      orbitSpeed: 0.8,
+      diveSpeed: 8,
+      recoverSpeed: 5,
+      diveInterval: 2.8,
+      deathDropHeight: 0.18,
+      wingFlapSpeed: 9,
+    },
+  },
+
+  /** Гранаты монстров: бросают, если игрок «засел» в лифте или укрытии; урона монстрам не наносят. */
+  grenade: {
+    campTime: 5,        // общий таймер этажа: гранаты не чаще раза в 15 с (при «засидке» в лифте/укрытии)
+    stillRadius: 2.5,    // в укрытии игрок не должен отходить дальше этого радиуса
+    retryDelay: 1.5,     // пауза после неудачной попытки броска
+    throwRangeMin: 4.5,
+    throwRangeMax: 26,
+    gravity: 9.8,
+    maxSpeed: 22,
+    radius: 0.16,
+    fuseRadius: 0.9,     // близость к игроку/NPC, при которой граната взрывается в воздухе
+    maxFlightTime: 4,
+    splashDamage: 45,
+    explosionRadius: 3.8,
+    shieldFactor: 0.35,  // во сколько раз ослабляет взрыв стена между гранатой и целью
+    windup: 0.45,        // замах до броска, с
+    throwDuration: 0.85, // вся анимация броска, с
+  },
+
+  safety: {
+    crushDistance: 0.3,
+    bodyHalfWidth: 0.35,
+    voidY: -0.6,
+  },
+
+  secrets: {
+    switchSize: 0.5,
+    // Угловой допуск попадания в луну, рад (видимый радиус луны ≈ 0.054).
+    moonHitAngle: 0.07,
+    moonRayLength: 120,
+  },
+
+  /**
+   * Финальный босс: появляется после активации пятого секрета.
+   * Здоровье задаётся множителем от здоровья ходячего монстра (monsters.walker.hp).
+   * Рост босса = высота дверей лифта (elevator.cabinHeight), подгоняется автоматически.
+   */
+  boss: {
+    hpMultiplier: 10,        // здоровье = здоровье ходячего монстра × 10
+    speed: 2.6,              // скорость преследования, м/с
+    emergeSpeed: 2.6,        // скорость выхода из лифта, м/с
+    radius: 1.0,             // радиус для столкновений с предметами, м
+    meleeRange: 3.3,         // дальность удара когтями, м
+    tailRange: 4.2,          // дальность кругового удара хвостом, м
+    rangedFrom: 5,           // дальше этого расстояния до игрока босс бросает куски лавы, м
+    clawDamage: 30,
+    tailDamage: 22,
+    meleeCooldown: 1.5,
+    clawWindup: 0.5,
+    tailWindup: 0.55,
+    lavaCooldown: 2.8,
+    lavaWindup: 0.7,
+    lavaLead: 0.5,           // упреждение броска по движению игрока (доля времени полёта)
+    lava: { splashDamage: 40, explosionRadius: 3.2 },
+    roarTime: 0.55,
+    /** Каждый NPC-смертник снимает такую долю максимального здоровья босса. */
+    npcBlastFraction: 0.05,
+    npcChargeGap: 0.9,       // пауза между смертниками, с
+    npcChargeSpeed: 5.2,     // скорость бега смертника, м/с
+    /** Сцена появления (секунды от активации секрета). Всего 7 с. */
+    intro: {
+      duration: 7,
+      shakeFrom: 1.5,        // дрожание камеры
+      panicFrom: 2.5,        // NPC бегают в панике
+      fireFrom: 3.6,         // двери лифта загораются адским огнём
+      doorsOpenAt: 4.8,      // двери открываются
+      bossEmergeAt: 5.2,     // босс выходит из лифта
+      bossStandZ: 6.9,       // где босс останавливается и ревёт (z на этаже 0)
+    },
+  },
+
+  /**
+   * Итоговый результат (экран окончания игры). Все значения — очки; меняйте здесь.
+   * Формула: base − штраф за время + победа − поражение − невбитые монстры (пропорционально) + озверевшие NPC (пропорционально)
+   * + секреты + убийство босса + здоровье (пропорционально).
+   */
+  score: {
+    base: 1000,
+    /** Первые N секунд игры штрафа нет, дальше — timePenaltyPerSecond очков за каждую секунду. */
+    timePenaltyFreeSeconds: 60,
+    timePenaltyPerSecond: 1,
+    victory: 200,
+    /** Штраф за поражение (игрок погиб). */
+    defeatPenalty: 500,
+    /** Штраф, если не убит ни один монстр (убитые / все появившиеся); меньше невбитых — пропорционально. */
+    unkilledMonstersFull: 500,
+    /** Бонус за 100% озверевших NPC (озверевшие / все NPC); меньше — пропорционально. */
+    enragedNpcsFull: 100,
+    /** За каждый найденный обычный секрет. */
+    secret: 20,
+    /** За финальный секрет. */
+    finalSecret: 30,
+    bossKill: 500,
+    /** Бонус за полное здоровье в конце игры; меньше — пропорционально. */
+    fullHealth: 100,
+  },
+
+  result: {
+    delayBeforeMessage: 2,
+  },
+
+  lava: {
+    floor: -1,
+    cabinTargetY: -25.0,
+    surfaceY: -23.6,
+    deathDelay: 0.65,
+    shaftWidth: 7.2,
+    shaftDepth: 7.2,
+    shaftTopY: -0.12,
+    shaftBottomY: -27.0,
+    glowSpeed: 3.2,
+    sparkCount: 36,
+    lightRange: 2.8,
+  },
+
+  emergency: {
+    waitTime: 5.0,
+    gravity: 10.5,
+    impactDistance: 16.0,
+    cableBreakDuration: 1.25,
+    shakeAmplitude: 0.24,
+    shakeFrequency: 31,
+    cameraShakeAmplitude: 0.16,
+    cameraShakeFrequency: 34,
+    doorOpenBeforeFall: 0.35,
+    doorOpenDuringFall: 0.55,
+  },
+};

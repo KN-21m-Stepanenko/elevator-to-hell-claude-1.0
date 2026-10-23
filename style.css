@@ -1,0 +1,171 @@
+html, body {
+    margin: 0; height: 100%; overflow: hidden; background: #000;
+    color: #d8c9a0; font-family: "Courier New", monospace;
+}
+
+/* Пиксельный рендер как в Quake + прицел-курсор */
+#game {
+    width: 100%; height: 100%; display: block; outline: none;
+    image-rendering: crisp-edges; image-rendering: pixelated;
+    cursor: crosshair;
+}
+
+/* Прицел — крестик с янтарным свечением */
+#crosshair {
+    position: fixed; left: 50%; top: 50%; transform: translate(-50%, -52%);
+    color: #d8b45a; font: 20px/1 "Courier New", monospace;
+    text-shadow: 0 0 3px #000, 0 0 6px rgba(216,180,90,.6);
+    pointer-events: none; user-select: none;
+}
+
+/* Подсказка взаимодействия (появляется под прицелом) */
+#hint {
+    position: fixed; left: 50%; top: 56%; transform: translateX(-50%);
+    padding: 4px 12px; background: rgba(0, 0, 0, .65);
+    border: 1px solid rgba(216, 180, 90, .35);
+    font-size: 18px; color: #ffd060;
+    text-shadow: 0 1px 2px #000; pointer-events: none;
+}
+
+/* Всплывающее сообщение (этаж, перегруз и т.д.) */
+#toast {
+    position: fixed; left: 50%; top: 12%; transform: translateX(-50%);
+    padding: 8px 18px; background: rgba(0, 0, 0, .75);
+    border: 2px solid #c9482b; font-size: 20px; text-align: center;
+    color: #e8d8b0; text-shadow: 0 1px 2px #000; pointer-events: none;
+}
+
+/* Счётчик оставшихся секретов (постоянная надпись в углу) */
+#secrets {
+    position: fixed; left: 14px; top: 12px;
+    padding: 4px 12px; background: rgba(0, 0, 0, .65);
+    border: 1px solid rgba(201, 72, 43, .6);
+    font-size: 16px; letter-spacing: .08em; color: #ff6a3d;
+    text-shadow: 0 0 6px rgba(255, 60, 20, .5); pointer-events: none;
+}
+
+/* Счётчик монстров этажа (правый верхний угол) */
+#monsters {
+    position: fixed; right: 14px; top: 12px;
+    padding: 4px 12px; background: rgba(0, 0, 0, .65);
+    border: 1px solid rgba(216, 180, 90, .45);
+    font-size: 16px; letter-spacing: .08em; color: #e0a83c;
+    text-shadow: 0 1px 2px #000; pointer-events: none;
+}
+
+/* Индикатор здоровья (левый нижний угол) */
+#health {
+    position: fixed; left: 14px; bottom: 12px;
+    padding: 4px 12px; background: rgba(0, 0, 0, .65);
+    border: 1px solid rgba(255, 255, 255, .2);
+    font-size: 20px; letter-spacing: .06em; color: #9fd070;
+    text-shadow: 0 1px 2px #000; pointer-events: none;
+}
+
+/* Шкала здоровья финального босса (правый нижний угол) */
+#bossbar {
+    position: fixed; right: 14px; bottom: 12px; width: 280px;
+    padding: 6px 10px 8px; background: rgba(0, 0, 0, .7);
+    border: 1px solid rgba(255, 90, 40, .55); pointer-events: none;
+}
+#bossbar .bossbar-label {
+    font-size: 14px; letter-spacing: .14em; color: #ff6a3a;
+    text-shadow: 0 1px 2px #000; margin-bottom: 4px; text-align: right;
+}
+#bossbar .bossbar-track { height: 14px; background: #1a0505; border: 1px solid rgba(255, 255, 255, .2); }
+#bossbar .bossbar-fill {
+    height: 100%; width: 100%; background: linear-gradient(90deg, #7a0b0b, #e0361a 70%, #ff8a2a);
+    transition: width .15s linear;
+}
+
+/* Итоговый результат на экране окончания */
+#overlay .score { font-size: 28px; color: #e0a83c; margin: 10px 0 2px; letter-spacing: .08em; }
+#overlay .score-lines { font-size: 14px; line-height: 1.5; color: #b8b2a0; margin: 0 0 8px; }
+
+/* Стартовый оверлей — тёмный градиент + янтарный заголовок */
+#overlay {
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 6px;
+    background: radial-gradient(circle at 50% 40%, rgba(24,18,10,.55), rgba(0,0,0,.97));
+    color: #b8b2a0; text-align: center; cursor: pointer; user-select: none;
+}
+#overlay h1 {
+    margin: 0; color: #e0a83c; font-size: 60px; letter-spacing: .35em;
+    text-shadow: 0 0 18px rgba(224,168,60,.35);
+}
+#overlay .tag  { color: #969795; font-size: 24px; letter-spacing: .2em; margin: 0 0 10px; }
+#overlay .sub  { color: #d8b45a; font-size: 38px; margin: 18px 0 0; }
+#overlay .stats { color: #b8b2a0; font-size: 22px; line-height: 1.5; margin: 14px 0 0; }
+#overlay .keys { color: #7d8371; font-size: 24px; margin: 6px 0 0; }
+
+.hidden { display: none !important; }
+
+/* Кнопка рестарта в меню паузы (клавиша R) */
+#restartKey {
+    margin-top: 22px; padding: 0; border: 0; background: none;
+    color: #b8b2a0; font: inherit; font-size: 20px; cursor: pointer;
+    text-shadow: 1px 1px 0 #000;
+}
+#restartKey:hover { color: #fff; text-shadow: 0 0 5px rgba(255, 255, 255, .7), 1px 1px 0 #000; }
+#restartKey:focus-visible { outline: 1px solid #b8b2a0; outline-offset: 4px; }
+
+#restartButton {
+    margin-top: 18px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #b8b2a0;
+    /* font: inherit; */
+    font-size: 18px;
+    /* text-transform: uppercase; */
+    cursor: pointer;
+    text-shadow: 1px 1px 0 #000;
+    animation: restartGlow 1.8s ease-in-out infinite;
+}
+
+#restartButton:hover {
+    color: #ffffff;
+    animation: none;
+    text-shadow:
+    0 0 5px rgba(255, 255, 255, 0.7),
+    1px 1px 0 #000;
+}
+
+#restartButton:focus-visible {
+    outline: 1px solid #b8b2a0;
+    outline-offset: 4px;
+}
+
+@keyframes restartGlow {
+    0%, 100% {
+    opacity: 0.55;
+    text-shadow:
+        1px 1px 0 #000,
+        0 0 2px rgba(255, 180, 90, 0.15);
+    }
+
+    50% {
+    opacity: 1;
+    text-shadow:
+        1px 1px 0 #000,
+        0 0 6px rgba(255, 180, 90, 0.8),
+        0 0 12px rgba(255, 140, 50, 0.35);
+    }
+}
+
+/* Окно окончания игры: статистика слева, таблица рекордов справа */
+#overlay.result-mode { overflow-y: auto; justify-content: safe center; padding: 24px 16px; cursor: default; }
+#overlay.result-mode h1 { font-size: 48px; letter-spacing: .25em; }
+.result-grid { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 8px 56px; }
+.result-col { min-width: 280px; }
+#overlay .lb-title { margin: 14px 0 8px; color: #e0a83c; font-size: 22px; letter-spacing: .12em; font-weight: normal; }
+.lb-table { border-collapse: collapse; margin: 0 auto; font-size: 18px; color: #b8b2a0; }
+.lb-table th { color: #7d8371; font-weight: normal; font-size: 14px; padding: 2px 10px; border-bottom: 1px solid #3a3526; }
+.lb-table td { padding: 3px 10px; text-align: right; }
+.lb-table td:first-child { text-align: center; color: #7d8371; }
+.lb-table .lb-name { text-align: left; max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-table tr.me td { color: #e0a83c; background: rgba(224,168,60,.12); }
+.lb-note { margin: 6px 0 0; font-size: 14px; color: #7d8371; }
+.name-form { margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; font-size: 16px; color: #b8b2a0; }
+.name-form input { background: #0c0a06; color: #e0a83c; border: 1px solid #5a4a22; padding: 4px 8px; font: inherit; width: 150px; }
+.name-form button { background: #2a2214; color: #e0a83c; border: 1px solid #5a4a22; padding: 4px 10px; font: inherit; cursor: pointer; }
